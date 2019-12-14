@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="242px" height="38px" viewBox="0 0 242 38" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
+    <title>logo</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M0,7.15287273 C0,11.0088 3.19914419,14.1345818 7.14407442,14.1345818 C11.0896744,14.1345818 14.2884837,11.0088 14.2884837,7.15287273 C14.2884837,3.29694545 11.0896744,0.170836364 7.14407442,0.170836364 C3.19914419,0.170836364 0,3.29694545 0,7.15287273" id="path-1"></path>
+        <radialGradient cx="32.8682968%" cy="42.219239%" fx="32.8682968%" fy="42.219239%" r="135.978553%" gradientTransform="translate(0.328683,0.422192),scale(0.977273,1.000000),translate(-0.328683,-0.422192)" id="radialGradient-3">
+            <stop stop-color="#EB991F" offset="0%"></stop>
+            <stop stop-color="#774C00" offset="100%"></stop>
+        </radialGradient>
+        <polygon id="path-4" points="2.97048358 4.75706329 0.137659701 9.41853165 9.95437612 25.5701873 15.620991 25.5701873 21.2879284 25.5701873 5.80427463 0.0952708861"></polygon>
+        <linearGradient x1="59.3614023%" y1="63.5326764%" x2="-2.48740294%" y2="-25.865594%" id="linearGradient-6">
+            <stop stop-color="#63B163" offset="0%"></stop>
+            <stop stop-color="#336736" offset="100%"></stop>
+        </linearGradient>
+        <polygon id="path-7" points="2.97048358 4.75706329 0.137659701 9.41853165 9.95437612 25.5701873 15.620991 25.5701873 21.2879284 25.5701873 5.80427463 0.0952708861"></polygon>
+        <linearGradient x1="93.1648358%" y1="107.648747%" x2="9.0153063%" y2="-4.73395973%" id="linearGradient-9">
+            <stop stop-color="#179854" offset="0%"></stop>
+            <stop stop-color="#1C754D" offset="100%"></stop>
+        </linearGradient>
+        <polygon id="path-10" points="2.97048358 4.75706329 0.137659701 9.41853165 9.95437612 25.5701873 15.620991 25.5701873 21.2879284 25.5701873 5.80427463 0.0952708861"></polygon>
+    </defs>
+    <g id="员工" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="登陆页" transform="translate(-50.000000, -67.000000)">
+            <g id="logo" transform="translate(50.000000, 59.000000)">
+                <text id="CRM系统" font-family="PingFangSC-Medium, PingFang SC" font-size="40" font-weight="400" letter-spacing="0.140000001" fill="#02AF66">
+                    <tspan x="70" y="42">CRM系统</tspan>
+                </text>
+                <g id="Group-16" transform="translate(0.000000, 10.000000)">
+                    <g id="Group-3">
+                        <mask id="mask-2" fill="white">
+                            <use xlink:href="#path-1"></use>
+                        </mask>
+                        <g id="Clip-2"></g>
+                        <path d="M0,7.15287273 C0,11.0088 3.19914419,14.1345818 7.14407442,14.1345818 C11.0896744,14.1345818 14.2884837,11.0088 14.2884837,7.15287273 C14.2884837,3.29694545 11.0896744,0.170836364 7.14407442,0.170836364 C3.19914419,0.170836364 0,3.29694545 0,7.15287273" id="Fill-1" fill="url(#radialGradient-3)" mask="url(#mask-2)"></path>
+                    </g>
+                    <g id="Group-6" transform="translate(38.400000, 9.600000)">
+                        <mask id="mask-5" fill="white">
+                            <use xlink:href="#path-4"></use>
+                        </mask>
+                        <g id="Clip-5"></g>
+                        <polygon id="Fill-4" fill="url(#linearGradient-6)" mask="url(#mask-5)" points="2.97048358 4.75706329 0.137659701 9.41853165 9.95437612 25.5701873 15.620991 25.5701873 21.2879284 25.5701873 5.80427463 0.0952708861"></polygon>
+                    </g>
+                    <g id="Group-13" transform="translate(38.400000, 9.600000)">
+                        <g id="Group-9">
+                            <mask id="mask-8" fill="white">
+                                <use xlink:href="#path-7"></use>
+                            </mask>
+                            <g id="Clip-8"></g>
+                            <polygon id="Fill-7" fill="url(#linearGradient-9)" mask="url(#mask-8)" points="2.97048358 4.75706329 0.137659701 9.41853165 9.95437612 25.5701873 15.620991 25.5701873 21.2879284 25.5701873 5.80427463 0.0952708861"></polygon>
+                        </g>
+                        <g id="Group-12">
+                            <mask id="mask-11" fill="white">
+                                <use xlink:href="#path-10"></use>
+                            </mask>
+                            <g id="Clip-11"></g>
+                            <polygon id="Stroke-10" stroke="#231916" mask="url(#mask-11)" points="5.42501731 34.7761418 -10.8368812 6.46416203 16.0003128 -9.11035949 32.2625337 19.2016203"></polygon>
+                        </g>
+                    </g>
+                    <polygon id="Fill-14" fill="#169854" points="35.3786882 5.40808672 32.5051356 10.0168141 16.8 35.2 22.5477592 35.2 28.2951914 35.2 38.2522408 19.2336282 41.1261204 14.6249008 44 10.0168141 41.1261204 5.40808672 38.2522408 0.8"></polygon>
+                    <polygon id="Fill-15" fill="#169854" points="2.4 35.2 8.14750129 35.2 13.8953296 35.2 29.6 10.0165796 26.7264128 5.40780928 23.8521717 0.8"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
