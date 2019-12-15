@@ -43,7 +43,29 @@
   }
 }
 
-// to fix el-date-picker css style
-.el-range-separator {
-  box-sizing: content-box;
+.el-table thead{
+  font-size: 12px;
+  font-family: PingFangSC-Regular;
+}
+.el-table td, .el-table th {
+  padding: 5px 0;
+}
+
+.el-table--border td, .el-table--border th {
+  border-right-width: 0;
+}
+.el-table--border td:last-child, .el-table--border th:last-child {
+  border-right-width: 1px;
+}
+
+.el-table thead tr th {
+  background-color: #eee;
+}
+.el-dialog__header {
+  border-bottom: 1px solid #d9d9d9;
+}
+
+.el-scrollbar__wrap--hidden-default {
+  margin-bottom: -17px;
+  margin-right: -17px;
 }
