@@ -152,6 +152,8 @@ export default {
 .tags-view-container {
   height: 34px;
   width: 100%;
+  display: flex;
+  align-items: center;
   background: #fff;
   border-bottom: 1px solid #d8dce5;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
@@ -176,9 +178,9 @@ export default {
         margin-right: 15px;
       }
       &.active {
-        background-color: #42b983;
+        background-color: #66b1ff;
         color: #fff;
-        border-color: #42b983;
+        border-color: #66b1ff;
         &::before {
           content: '';
           background: #fff;
