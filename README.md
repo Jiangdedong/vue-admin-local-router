@@ -4,7 +4,7 @@
  * @Author: JDD
  * @Date: 2019-12-14 15:55:37
  * @LastEditors: JDD
- * @LastEditTime: 2019-12-14 16:08:09
+ * @LastEditTime: 2019-12-14 22:51:18
  -->
 # vue-admin-template
 
@@ -54,31 +54,6 @@ npm run lint
 # 代码格式检查并自动修复
 npm run lint -- --fix
 ```
-
-## 根据权限加载动态路由
-如果你的动态路由已经添加到了vux的state中，但是页面的左侧菜单栏并没有对应的路由菜单，在`src`目录下的`permission.js`中，将以下代码：
-~~~Javascript
-router.addRoutes(accessRoutes)
-~~~
-做如下修改：
-~~~Javascript
-router.options.routes = store.getters.addRouters
-router.addRoutes(accessRoutes)
-~~~
-同时相应的在`store`目录下的`permission.js`中将以下代码：
-~~~Javascript
-SET_ROUTERS: (state, routers) => {
-    state.addRouters = routes
-    state.routers = constantRouterMap.concat(routers)
-}
-~~~
-做如下修改：
-~~~Javascript
-SET_ROUTERS: (state, routers) => {
-    state.addRouters = constantRouterMap.concat(routers)
-    state.routers = constantRouterMap.concat(routers)
-}
-~~~
 
 ## 路由缓存问题
 如果想缓存某个页面，请在路由对应的页面中确保路由中定义的`name`属性值和该页面中定义的`name`属性一样
