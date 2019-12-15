@@ -1,11 +1,12 @@
-import { login, logout } from '@/api/user'
+import { login, logout, getInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
+import { Encrypt } from '@/utils/cryptojs'
 import { resetRouter } from '@/router'
 
 const state = {
   token: getToken(),
   name: '',
-  avatar: '',
+  avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
   roles: []
 }
 
@@ -27,13 +28,12 @@ const mutations = {
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const { loginAccount, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-        resolve()
+      login({ loginAccount: loginAccount.trim(), password: Encrypt(password.trim()) }).then(response => {
+        commit('SET_TOKEN', response.result.token)
+        setToken(response.result.token)
+        resolve(response)
       }).catch(error => {
         reject(error)
       })
@@ -43,39 +43,36 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      // getInfo().then(response => {
-      const res = {
-        loginAccount: 'admin',
-        type: 0
-      }
-      const data = { name: res.loginAccount, roles: [], avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif' }
-      if (res.type === 0) {
-        data.roles = ['admin']
-      } else if (res.type === 1) {
-        data.roles = ['ops']
-      } else if (res.type === 2) {
-        data.roles = ['finance']
-      } else {
-        data.roles = ['ys']
-      }
-      if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-        commit('SET_ROLES', data.roles)
-      } else {
-        reject('getInfo: roles must be a non-null array !')
-      }
-      commit('SET_NAME', data.name)
-      commit('SET_AVATAR', data.avatar)
-      resolve(data)
-      // }).catch(error => {
-      //   reject(error)
-      // })
+      getInfo().then(response => {
+        const res = response.result
+        if (!response) {
+          reject('Verification failed, please Login again.')
+        }
+        // roles must be a non-empty array
+        // if (!roles || roles.length <= 0) {
+        //   reject('getInfo: roles must be a non-null array!')
+        // }
+        let roles = []
+        if (res.type === 1) {
+          roles = ['admin']
+        } else {
+          roles = ['tourist']
+        }
+        res.roles = roles
+        commit('SET_ROLES', roles)
+        commit('SET_NAME', res.name)
+        // commit('SET_AVATAR', avatar)
+        resolve(res)
+      }).catch(error => {
+        reject(error)
+      })
     })
   },
 
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
+      logout().then(() => {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
         removeToken()
@@ -91,6 +88,7 @@ const actions = {
   resetToken({ commit }) {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
+      commit('SET_ROLES', [])
       removeToken()
       resolve()
     })
