@@ -6,34 +6,21 @@
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
-        <!-- <error-log class="errLog-container right-menu-item"/> -->
-        <!-- <div class="user-info">客户：<span class="user-name">{{drugStoreName}}</span> 短信余额:<span class="user-number">{{ messageNumber }}</span>条</div> -->
         <el-tooltip :content="$t('navbar.screenfull')" effect="dark" placement="bottom">
           <screenfull class="screenfull right-menu-item" />
         </el-tooltip>
         <span style="position: relative;margin:5px 10px 0 0;">
           <router-link to="/station/stationMsg">
             <img src="../../../static/images/bell.png" width="20" style="margin: 0 5px;" alt="">
-            <!-- <i class="el-icon-bell msg-bell"></i> -->
-            <!-- v-if="msgTotal > 0" -->
             <i class="msg-total">1</i>
           </router-link>
         </span>
-        <!-- <el-tooltip :content="$t('navbar.size')" effect="dark" placement="bottom">
-          <size-select class="international right-menu-item"/>
-        </el-tooltip>
-
-        <lang-select class="international right-menu-item"/>
-
-        <el-tooltip :content="$t('navbar.theme')" effect="dark" placement="bottom">
-          <theme-picker class="theme-switch right-menu-item"/>
-        </el-tooltip> -->
       </template>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
           <span style="position: relative;top: -10px;left: 5px;cursor:pointer;">
-            <span>账户名</span>
+            <span>{{ name }}</span>
             <i class="el-icon-caret-bottom" style="position: relative;top: 0;left: 5px;" />
           </span>
         </div>
@@ -74,7 +61,8 @@ export default {
     ...mapGetters([
       'sidebar',
       'avatar',
-      'device'
+      'device',
+      'name'
     ])
   },
   methods: {
@@ -83,7 +71,8 @@ export default {
     },
     async logout() {
       await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      await this.$store.dispatch('delAllViews')
+      this.$router.push('/login')
     }
   }
 }
@@ -120,6 +109,7 @@ export default {
     // line-height: 50px;
     display: flex;
     align-items: center;
+
     &:focus {
       outline: none;
     }
@@ -151,8 +141,8 @@ export default {
 
         .user-avatar {
           cursor: pointer;
-          width: 30px;
-          height: 30px;
+          width: 40px;
+          height: 40px;
           border-radius: 10px;
         }
 
