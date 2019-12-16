@@ -13,7 +13,7 @@ import { getToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
-  baseURL: 'http://192.168.3.2:9999/api', // url = base url + request url
+  baseURL: 'http://192.168.1.100:9999/api', // url = base url + request url
   timeout: 5000 // request timeout
 })
 
@@ -37,7 +37,7 @@ service.interceptors.response.use(
   response => {
     const res = response.data
     // console.log(res)
-    if (res.statusCode !== 200 && res.statusCode !== 401 && res.statusCode !== 402) {
+    if (res.statusCode === 401 || res.statusCode === 402 || res.statusCode === 500) {
       Message({
         message: res.message || 'Error',
         type: 'error',
