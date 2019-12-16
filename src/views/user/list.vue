@@ -3,10 +3,10 @@
     <div ref="searchBox" class="jdd-search-box">
       <el-form :inline="true" @submit.native.prevent>
         <el-form-item label="用户名" label-width="80px">
-          <el-input v-model="parameters.name" size="small" style="width:170px;" :clearable="true" @keyup.enter.native="getTableData" />
+          <el-input v-model="parameters.name" size="small" style="width:170px;" :clearable="true" @keyup.enter.native="parameters.pageNum=1;getTableData()" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" size="small" icon="el-icon-search" @click="getTableData">搜索</el-button>
+          <el-button type="primary" size="small" icon="el-icon-search" @click="parameters.pageNum=1;getTableData()">搜索</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -31,16 +31,16 @@
     <el-dialog v-el-drag-dialog :title="formTitle" :visible.sync="dialogFormVisible" width="400px" center :close-on-click-modal="false">
       <el-form ref="formRef" :model="form" :inline="true" :rules="rules">
         <el-form-item prop="name" label="昵称" :label-width="formLabelWidth">
-          <el-input v-model="form.name" size="small" auto-complete="off" style="width:200px;" />
+          <el-input v-model="form.name" size="small" auto-complete="off" style="width:200px;" :maxlength="11" />
+        </el-form-item>
+        <el-form-item prop="tel" label="手机号" :label-width="formLabelWidth">
+          <el-input v-model="form.tel" size="small" auto-complete="off" style="width:200px;" :maxlength="11" />
         </el-form-item>
         <el-form-item label="性别" :label-width="formLabelWidth">
           <el-radio-group v-model="form.sex">
             <el-radio :label="1">男</el-radio>
             <el-radio :label="0">女</el-radio>
           </el-radio-group>
-        </el-form-item>
-        <el-form-item label="手机号" :label-width="formLabelWidth">
-          <el-input v-model="form.tel" size="small" auto-complete="off" style="width:200px;" :maxlength="11" />
         </el-form-item>
       </el-form>
       <div slot="footer">
@@ -104,6 +104,10 @@ export default {
       rules: {
         name: [
           { required: true, message: '请填写昵称', trigger: 'blur' }
+        ],
+        tel: [
+          { required: true, message: '请填写手机号码', trigger: 'blur' },
+          { pattern: /^(13[0-9]|15[0-9]|16[0-9]|17[0-9]|18[0-9]|19[0-9]|14[0-9])[0-9]{8}$/, message: '请输入正确的手机号号码' }
         ]
       },
       formLabelWidth: '80px',
@@ -141,6 +145,9 @@ export default {
       this.formTitle = '新增'
       this.formType = 'add'
       this.ajaxUrl = '/user/add'
+      this.$nextTick(() => {
+        this.$refs.formRef.resetFields()
+      })
     },
     editUser(row) {
       this.dialogFormVisible = true
@@ -151,7 +158,6 @@ export default {
     submitForm() {
       this.$refs.formRef.validate((valid) => {
         if (valid) {
-          this.dialogFormVisible = false
           this.submitLoading = this.$loading({
             lock: true,
             text: '正在提交，请稍后',
@@ -168,7 +174,7 @@ export default {
               this.getTableData()
             } else {
               this.$message({
-                message: response.errorInfo,
+                message: response.message,
                 type: 'error'
               })
             }
