@@ -4,7 +4,7 @@
  * @Author: JDD
  * @Date: 2019-12-14 20:00:44
  * @LastEditors: JDD
- * @LastEditTime: 2019-12-15 20:12:33
+ * @LastEditTime: 2019-12-17 20:22:59
  */
 import axios from 'axios'
 import { Message } from 'element-ui'
@@ -13,7 +13,7 @@ import { getToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
-  baseURL: 'http://192.168.1.100:9999/api', // url = base url + request url
+  baseURL: 'http://192.168.3.2:9999/api', // url = base url + request url
   timeout: 5000 // request timeout
 })
 
