@@ -1,200 +1,211 @@
 <template>
   <div>
-    <div ref="searchBox" class="jdd-search-box">
-      <el-form :inline="true" @submit.native.prevent>
-        <el-form-item label="用户名" label-width="80px">
-          <el-input v-model="parameters.name" size="small" style="width:170px;" :clearable="true" @keyup.enter.native="getTableData" />
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" size="small" icon="el-icon-search" @click="getTableData">搜索</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
-    <div class="jdd-content">
+    <div class="jdd-content" style="margin-top:0px;">
       <el-row class="jdd-table-tile">
-        <div class="jdd-table-name">用户列表</div>
-        <el-button type="primary" size="small" @click="dialogFormVisible=true">新增</el-button>
+        <div class="jdd-table-name">菜单配置</div>
+        <el-button type="primary" size="small" @click="append">新增</el-button>
       </el-row>
-      <el-table v-loading="tableData.loading" :data="tableData.data" max-height="700" border stripe highlight-current-row>
-        <el-table-column v-for="(item,index) in tableData.columns" :key="index" :prop="item.prop" :label="item.label" :show-overflow-tooltip="tableData.showOverflowTooltip" :formatter="item.formatter" :sortable="item.sortable" />
-        <el-table-column fixed="right" label="操作" width="150" align="center" header-align="center">
-          <!-- <template slot-scope="scope"> -->
-          <template>
-            <el-button size="mini" type="primary">编辑</el-button>
-            <el-button size="mini" type="danger">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-row style="text-align:right;margin: 10px 0">
-        <el-pagination :total="tableData.total" layout="total, sizes, prev, pager, next" :page-sizes="[10, 20, 30, 40,50]" :page-size="20" :current-page="tableData.pageNum" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
-      </el-row>
+      <div class="custom-tree-container">
+        <div class="block">
+          <el-tree :style="{ height: dataTableHeight-85 + 'px' }" :data="menuData" node-key="id" default-expand-all :expand-on-click-node="false">
+            <span slot-scope="{ node, data }" class="custom-tree-node">
+              <span>{{ node.label }}</span>
+              <span>
+                <el-button
+                  type="text"
+                  size="mini"
+                  @click="() => append(node, data)"
+                >
+                  添加子菜单
+                </el-button>
+                <el-button
+                  type="text"
+                  size="mini"
+                  @click="() => edit(node, data)"
+                >
+                  <span style="color:#0CC576">编辑</span>
+                </el-button>
+                <el-button
+                  type="text"
+                  size="mini"
+                  @click="() => remove(node, data)"
+                >
+                  <span style="color:#f56c6c">删除</span>
+                </el-button>
+              </span>
+            </span>
+          </el-tree>
+        </div>
+      </div>
     </div>
-    <el-dialog v-el-drag-dialog :title="formTitle" :visible.sync="dialogFormVisible" width="400px" center :close-on-click-modal="false">
-      <el-form ref="formRef" :model="form" :inline="true" :rules="rules">
-        <el-form-item prop="name" label="昵称" :label-width="formLabelWidth">
-          <el-input v-model="form.name" size="small" auto-complete="off" style="width:200px;" />
+    <el-dialog v-el-drag-dialog :title="formTitle" :visible.sync="dialogFormVisible" :close-on-click-modal="false" width="700px">
+      <el-form ref="formRef" :model="form" :inline="true">
+        <el-form-item prop="" label="path" :label-width="formLabelWidth">
+          <el-input v-model="form.path" :disabled="formType=='edit'?true:false" placeholder="" size="small" style="width:500px;" />
         </el-form-item>
-        <el-form-item label="性别" :label-width="formLabelWidth">
-          <el-radio-group v-model="form.sex">
-            <el-radio :label="1">男</el-radio>
-            <el-radio :label="0">女</el-radio>
-          </el-radio-group>
+        <el-form-item prop="" label="name" :label-width="formLabelWidth">
+          <el-input v-model="form.name" placeholder="" size="small" style="width:500px;" />
         </el-form-item>
-        <el-form-item label="手机号" :label-width="formLabelWidth">
-          <el-input v-model="form.tel" size="small" auto-complete="off" style="width:200px;" :maxlength="11" />
+        <el-form-item prop="" label="redirect" :label-width="formLabelWidth">
+          <el-input v-model="form.redirect" :disabled="formType=='edit'?true:false" placeholder="" />
+        </el-form-item>
+        <el-form-item prop="" label="component" :label-width="formLabelWidth">
+          <el-input v-model="form.component" placeholder="" size="small" style="width:500px;" />
+        </el-form-item>
+        <el-form-item prop="" label="hidden" :label-width="formLabelWidth">
+          <div style="width:185px;">
+            <el-radio v-model="form.hidden" label="true">true</el-radio>
+            <el-radio v-model="form.hidden" label="false">false</el-radio>
+          </div>
+        </el-form-item>
+        <el-form-item prop="" label="title" :label-width="formLabelWidth">
+          <el-input v-model="form.title" :disabled="formType=='edit'?true:false" size="small" placeholder="" />
+        </el-form-item>
+        <el-form-item prop="" label="icon" :label-width="formLabelWidth">
+          <el-input v-model="form.icon" placeholder="" size="small" />
+        </el-form-item>
+        <el-form-item prop="" label="iconMini" :label-width="formLabelWidth">
+          <el-input v-model="form.iconMini" placeholder="" size="small" />
+        </el-form-item>
+        <el-form-item prop="" label="priority" :label-width="formLabelWidth">
+          <el-input v-model="form.priority" placeholder="" size="small" />
         </el-form-item>
       </el-form>
-      <div slot="footer">
-        <el-button size="small" @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" size="small" @click="submitForm">确 定</el-button>
+      <div slot="footer" class="dialog-footer" style="text-align: center">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitForm('formRef')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
 import elDragDialog from '@/directive/el-dragDialog'
+import { menuList, menuAddOrEdit, menuDel } from '@/api/menu'
 export default {
-  name: 'Config',
+  name: 'Menu',
   components: {},
   directives: { elDragDialog },
   data() {
     return {
-      dataTableHeight: 0,
-      tableData: {
-        data: [
-          { name: 'aaa', login_account: 'admin', sex: 1, tel: '15356678092' },
-          { name: 'bbb', login_account: 'admin', sex: 1, tel: '15356678092' }
-        ],
-        width: '100%',
-        height: 0,
-        loading: false,
-        showOverflowTooltip: true,
-        columns: [
-          { prop: 'name', label: '昵称' },
-          { prop: 'login_account', label: '登陆账号' },
-          { prop: 'sex', label: '性别', formatter: function(row, column, cellValue, index) {
-            if (cellValue === 1) {
-              return '男'
-            } else {
-              return '女'
-            }
-          } },
-          { prop: 'tel', label: '手机号' }
-        ],
-        pageNum: 1,
-        pageSize: 20,
-        pages: 0,
-        total: 0
-      },
+      dataTableHeight: 600,
       parameters: {
-        name: '',
-        pageNum: 1,
-        pageSize: 20
+        usage: '1'
       },
-      dialogFormVisible: false,
-      formTitle: '新增用户',
-      formType: 'add',
+      menuData: [],
+      submitLoading: null,
       form: {
+        parentId: '',
+        path: '',
         name: '',
-        tel: '',
-        sex: 1
+        component: '',
+        redirect: '',
+        hidden: 'false',
+        title: '',
+        icon: '',
+        iconMini: '',
+        priority: ''
       },
-      rules: {
-        name: [
-          { required: true, message: '请填写昵称', trigger: 'blur' }
-        ]
-      },
-      formLabelWidth: '80px',
-      submitLoading: false
+      formType: 'add',
+      formTitle: '新增菜单',
+      formLabelWidth: '110px',
+      dialogFormVisible: false
     }
   },
   mounted() {
-    // const _this = this
-    // window.onresize= function(){
-    //   _this.setStyle()
-    // }
-    // window.globalVueEvent.$on('sidebarStatus',()=>{//手动响应布局
-    //   setTimeout(()=>{
-    //     _this.setStyle()
-    //   },500)
-    // })
   },
-  created() {
-    this.$nextTick(() => {
-      // this.setStyle()
-    })
-  },
+  created() {},
   methods: {
-    // setStyle:function(){
-    //   if(this.$refs.searchBox){
-    //     const searchBoxHeight = this.$refs.searchBox.getBoundingClientRect().height
-    //     const windowSize = this.getWindowSize()
-    //     this.dataTableHeight = windowSize.winHeight - 120 - searchBoxHeight
-    //     this.tableData.height = this.dataTableHeight - 120
-    //   }
-    // },
-    getTableData() {
-      this.tableData.loading = true
-      // getTableDataJs(this.parameters).then( (response) => {
-      //   this.tableData.loading = false
-      //   if (response.errorNo == 1) {
-      //     this.tableData.data = response.result
-      //     this.tableData.pageSize = response.pageSize
-      //     this.tableData.pageNum = response.pageNum
-      //     this.tableData.total = response.total
-      //   } else {
-      //     this.$message({
-      //       message: response.errorInfo,
-      //       type: 'error'
-      //     })
-      //   }
-      // })
-    },
-    handleSizeChange(val) {
-      this.tableData.pageSize = val
-      this.parameters.pageSize = val
-      this.getTableData()
-    },
-    handleCurrentChange(val) {
-      this.tableData.pageNum = val
-      this.parameters.pageNum = val
-      this.getTableData()
-    },
-    submitForm() {
-      this.$refs.formRef.validate((valid) => {
-        if (valid) {
-          this.dialogFormVisible = false
-          // this.submitLoading = this.$loading({
-          //   lock: true,
-          //   text: '正在提交，请稍后',
-          //   spinner: 'el-icon-loading'
-          // })
-          // submitFormJs(this.ajaxUrl, this.form).then((response) => {
-          //   this.submitLoading.close()
-          //   if (response.errorNo) {
-          //     this.dialogFormVisible = false
-          //     this.$message({
-          //       message: '提交成功！',
-          //       type: 'success'
-          //     })
-          //     this.getTableData();
-          //   } else {
-          //     this.$message({
-          //       message: response.errorInfo,
-          //       type: 'error'
-          //     })
-          //   }
-          // })
+    getMenuData() {
+      menuList().then((response) => {
+        if (response.errorNo === 200) {
+          this.menuData = response.result
         } else {
-          console.log('error submit!!')
-          return false
+          this.$message({
+            message: response.message,
+            type: 'error'
+          })
         }
       })
+    },
+    append(node, data) {
+      // console.log(data)
+      this.dialogFormVisible = true
+      this.form.path = ''
+      this.form.name = ''
+      this.form.component = 'Layout'
+      this.form.redirect = ''
+      this.form.hidden = 'false'
+      this.form.title = ''
+      this.form.icon = ''
+      this.form.iconMini = ''
+      this.form.priority = '1'
+      this.form.parentId = '0'
+      if (data) this.form.parentId = data.id
+      if (this.form.children) delete this.form.children
+      if (this.form.id) delete this.form.id
+    },
+    edit(node, data) {
+      console.log(data)
+      this.dialogFormVisible = true
+      for (const item in this.form) {
+        this.form[item] = data[item]
+      }
+      this.form.hidden = data.hidden + ''
+      this.form.usage = data.usage + ''
+      this.form.id = data.id
+      // console.log(this.form.userTypes)
+    },
+    submitForm(data) {
+      menuAddOrEdit(this.form).then((response) => {
+        if (response.errorNo === 200) {
+          this.dialogFormVisible = false
+          this.getMenuData()
+        } else {
+          this.$message({
+            message: response.message,
+            type: 'error'
+          })
+        }
+      })
+    },
+    remove(node, data) {
+      // console.log(node,data)
+      this.$confirm('确认删除吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        menuDel({ menuId: data.id }).then((response) => {
+          if (response.errorNo === 200) {
+            this.getMenuData()
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            })
+          } else {
+            this.$message({
+              message: response.message,
+              type: 'error'
+            })
+          }
+        })
+      }).catch(() => {})
     }
   }
 }
 </script>
 <style scoped>
-  .el-form-item{margin: 8px 10px;}
+  .custom-tree-container{display: flex;padding: 0 10px;}
+  .custom-tree-container .block{flex: 1;}
+  .custom-tree-container .block p{padding: 10px 0 10px 10px;background-color: #EEEEEE;margin: 0;}
+  .custom-tree-container .block>div{overflow: auto}
+  .custom-tree-node{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    padding-right: 8px;
+  }
 </style>
 
