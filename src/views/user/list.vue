@@ -57,10 +57,10 @@
     <el-dialog v-el-drag-dialog title="修改密码" :visible.sync="modifyPasswordVisible" :close-on-click-modal="false" width="400px" center>
       <el-form ref="passwordFormRef" :model="passwordForm" :inline="true" :rules="passwordRules">
         <el-form-item prop="newPassword" label="新的密码" :label-width="formLabelWidth">
-          <el-input v-model="passwordForm.newPassword" placeholder="至少六位，最多十位" style="width:200px" type="password" auto-complete="off" :maxlength="10" />
+          <el-input v-model="passwordForm.newPassword" size="small" placeholder="至少六位，最多十位" style="width:200px" type="password" auto-complete="off" :maxlength="10" />
         </el-form-item>
         <el-form-item prop="secondConfirm" label="再次确认" :label-width="formLabelWidth">
-          <el-input v-model="passwordForm.secondConfirm" style="width:200px" type="password" />
+          <el-input v-model="passwordForm.secondConfirm" size="small" style="width:200px" type="password" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer" style="text-align: center">
