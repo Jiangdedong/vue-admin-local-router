@@ -31,8 +31,10 @@ const actions = {
     const { loginAccount, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ loginAccount: loginAccount.trim(), password: Encrypt(password.trim()) }).then(response => {
-        commit('SET_TOKEN', response.result.token)
-        setToken(response.result.token)
+        if (response.statusCode === 200) {
+          commit('SET_TOKEN', response.result.token)
+          setToken(response.result.token)
+        }
         resolve(response)
       }).catch(error => {
         reject(error)
