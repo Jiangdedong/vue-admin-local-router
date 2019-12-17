@@ -27,9 +27,19 @@ export function userAddOrEdit(url, data) {
 }
 
 // 用户删除
-export function userDel(params) {
+export function multipleUserDel(params) {
   return request({
-    url: '/user/edit/' + params.id,
-    method: 'get'
+    url: '/user/multipleDel',
+    method: 'get',
+    params
+  })
+}
+
+// 用户密码修改
+export function modifyPassword(data) {
+  return request({
+    url: '/user/modifyPassword',
+    method: 'post',
+    data
   })
 }
