@@ -14,13 +14,16 @@
       <el-row class="jdd-table-tile">
         <div class="jdd-table-name">用户列表</div>
         <el-button type="primary" size="small" @click="addUser">新增</el-button>
+        <el-button type="danger" size="small" @click="multipleUserDel()">批量删除</el-button>
       </el-row>
-      <el-table v-loading="tableData.loading" :data="tableData.data" max-height="700" border stripe highlight-current-row>
+      <el-table v-loading="tableData.loading" :data="tableData.data" max-height="700" border stripe highlight-current-row @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="55" />
         <el-table-column v-for="(item,index) in tableData.columns" :key="index" :prop="item.prop" :label="item.label" :show-overflow-tooltip="tableData.showOverflowTooltip" :formatter="item.formatter" :sortable="item.sortable" />
-        <el-table-column fixed="right" label="操作" width="150" align="center" header-align="center">
+        <el-table-column fixed="right" label="操作" width="250" align="center" header-align="center">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" @click="editUser(scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="userDel(scope.row.id)">删除</el-button>
+            <el-button size="mini" type="primary" @click="openPasswordDialog(scope.row.id)">密码修改</el-button>
+            <el-button size="mini" type="danger" @click="multipleUserDel(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -32,6 +35,9 @@
       <el-form ref="formRef" :model="form" :inline="true" :rules="rules">
         <el-form-item prop="name" label="昵称" :label-width="formLabelWidth">
           <el-input v-model="form.name" size="small" auto-complete="off" style="width:200px;" :maxlength="11" />
+        </el-form-item>
+        <el-form-item prop="loginAccount" label="登录账号" :label-width="formLabelWidth">
+          <el-input v-model="form.loginAccount" :disabled="formType=='edit'?true:false" size="small" auto-complete="off" style="width:200px;" :maxlength="11" />
         </el-form-item>
         <el-form-item prop="tel" label="手机号" :label-width="formLabelWidth">
           <el-input v-model="form.tel" size="small" auto-complete="off" style="width:200px;" :maxlength="11" />
@@ -45,27 +51,60 @@
       </el-form>
       <div slot="footer">
         <el-button size="small" @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" size="small" @click="submitForm">确 定</el-button>
+        <el-button type="primary" :loading="btnLoading" size="small" @click="submitForm">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog v-el-drag-dialog title="修改密码" :visible.sync="modifyPasswordVisible" :close-on-click-modal="false" width="400px" center>
+      <el-form ref="passwordFormRef" :model="passwordForm" :inline="true" :rules="passwordRules">
+        <el-form-item prop="newPassword" label="新的密码" :label-width="formLabelWidth">
+          <el-input v-model="passwordForm.newPassword" placeholder="至少六位，最多十位" style="width:200px" type="password" auto-complete="off" :maxlength="10" />
+        </el-form-item>
+        <el-form-item prop="secondConfirm" label="再次确认" :label-width="formLabelWidth">
+          <el-input v-model="passwordForm.secondConfirm" style="width:200px" type="password" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer" style="text-align: center">
+        <el-button size="small" @click="modifyPasswordVisible = false">取 消</el-button>
+        <el-button type="primary" :loading="btnLoading" size="small" @click="modifyPassword">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
 import elDragDialog from '@/directive/el-dragDialog'
-import { userList, userAddOrEdit, userDel } from '@/api/user'
+import { userList, userAddOrEdit, multipleUserDel, modifyPassword } from '@/api/user'
+import { Encrypt } from '@/utils/cryptojs'
 
 export default {
   name: 'List',
   components: {},
   directives: { elDragDialog },
   data() {
+    const validateLoginAccount = (rule, value, callback) => {
+      if (value.trim() === '') {
+        callback(new Error('登录账号不能为空'))
+      } else if (value.trim() === 'admin') {
+        callback(new Error('admin账号为管理员账号，请更换！'))
+      } else {
+        callback()
+      }
+    }
+    const validatePassword = (rule, value, callback) => {
+      const val = value.trim()
+      if (val !== '') {
+        if (this.passwordForm.newPassword !== value) {
+          callback(new Error('第二次输入的密码与首次不同！'))
+        } else {
+          callback()
+        }
+      } else {
+        callback(new Error('请再次输入密码！'))
+      }
+    }
     return {
       dataTableHeight: 0,
       tableData: {
-        data: [
-          { name: 'aaa', loginAccount: 'admin', sex: 1, tel: '15356678092' },
-          { name: 'bbb', loginAccount: 'admin', sex: 1, tel: '15356678092' }
-        ],
+        data: [],
         width: '100%',
         height: 0,
         loading: false,
@@ -98,6 +137,7 @@ export default {
       formType: 'add',
       form: {
         name: '',
+        loginAccount: '',
         tel: '',
         sex: 1
       },
@@ -105,13 +145,32 @@ export default {
         name: [
           { required: true, message: '请填写昵称', trigger: 'blur' }
         ],
+        loginAccount: [
+          { required: true, trigger: 'blur', validator: validateLoginAccount },
+          { pattern: /^[a-zA-Z]+$/, message: '只能输入英文字母' }
+        ],
         tel: [
-          { required: true, message: '请填写手机号码', trigger: 'blur' },
           { pattern: /^(13[0-9]|15[0-9]|16[0-9]|17[0-9]|18[0-9]|19[0-9]|14[0-9])[0-9]{8}$/, message: '请输入正确的手机号号码' }
         ]
       },
       formLabelWidth: '80px',
-      submitLoading: false
+      btnLoading: false,
+      multipleSelection: [],
+      modifyPasswordVisible: false,
+      passwordForm: {
+        newPassword: '',
+        secondConfirm: ''
+      },
+      passwordRules: {
+        newPassword: [
+          { required: true, message: '请输入新的密码', trigger: 'blur' },
+          { pattern: /^(?![a-zA-z]+$)(?!\d+$)(?![!@#$%^&*]+$)[a-zA-Z\d!@#$%^&*]+$/, message: '字母+数字、字母+特殊字符或数字+特殊字符' }
+        ],
+        secondConfirm: [
+          { required: true, trigger: 'blur', validator: validatePassword }
+        ]
+      },
+      userId: ''
     }
   },
   mounted() {
@@ -154,17 +213,17 @@ export default {
       this.formTitle = '编辑'
       this.formType = 'edit'
       this.ajaxUrl = '/user/edit'
+      for (const item in this.form) {
+        this.form[item] = row[item]
+      }
+      this.form.id = row.id
     },
     submitForm() {
       this.$refs.formRef.validate((valid) => {
         if (valid) {
-          this.submitLoading = this.$loading({
-            lock: true,
-            text: '正在提交，请稍后',
-            spinner: 'el-icon-loading'
-          })
+          this.btnLoading = true
           userAddOrEdit(this.ajaxUrl, this.form).then((response) => {
-            this.submitLoading.close()
+            this.btnLoading = false
             if (response.statusCode === 200) {
               this.dialogFormVisible = false
               this.$message({
@@ -180,24 +239,84 @@ export default {
             }
           })
         } else {
-          console.log('error submit!!')
           return false
         }
       })
     },
-    userDel(id) {
-      userDel({ id }).then((response) => {
-        if (response.statusCode === 200) {
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+      console.log(val)
+    },
+    multipleUserDel(id) {
+      let ids = ''
+      if (id) {
+        ids = id
+      } else {
+        const idArr = []
+        this.multipleSelection.forEach((item) => {
+          idArr.push(item.id)
+        })
+        if (idArr.length === 0) {
           this.$message({
-            message: '删除成功！',
-            type: 'success'
+            message: '请选择要删除的数据',
+            type: 'warning'
           })
-          this.getTableData()
+          return false
+        }
+        ids = idArr.join(',')
+      }
+      this.$confirm('确定删除吗?', '操作警告', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        multipleUserDel({ ids }).then((response) => {
+          if (response.statusCode === 200) {
+            this.$message({
+              message: '删除成功！',
+              type: 'success'
+            })
+            this.getTableData()
+          } else {
+            this.$message({
+              message: response.message,
+              type: 'error'
+            })
+          }
+        })
+      }).catch(() => {})
+    },
+    openPasswordDialog(id) {
+      this.userId = id
+      this.modifyPasswordVisible = true
+      this.passwordForm.newPassword = ''
+      this.passwordForm.secondConfirm = ''
+      this.$nextTick(() => {
+        this.$refs.passwordFormRef.resetFields()
+      })
+    },
+    modifyPassword() {
+      this.$refs.passwordFormRef.validate((valid) => {
+        if (valid) {
+          this.btnLoading = true
+          const pwd = Encrypt(this.passwordForm.newPassword.trim())
+          modifyPassword({ id: this.userId, pwd }).then((response) => {
+            this.btnLoading = false
+            if (response.statusCode === 200) {
+              this.dialogFormVisible = false
+              this.$message({
+                message: '密码修改成功！',
+                type: 'success'
+              })
+            } else {
+              this.$message({
+                message: response.message,
+                type: 'error'
+              })
+            }
+          })
         } else {
-          this.$message({
-            message: response.errorInfo,
-            type: 'error'
-          })
+          return false
         }
       })
     }
