@@ -44,11 +44,6 @@
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
 
-      <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
-      </div>
-
     </el-form>
   </div>
 </template>
@@ -111,8 +106,15 @@ export default {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm).then((res) => {
-            this.loading = false
-            this.$router.push({ path: '/' })
+            if (res.statusCode === 200) {
+              this.loading = false
+              this.$router.push({ path: '/' })
+            } else {
+              this.$message({
+                message: res.message,
+                type: 'error'
+              })
+            }
           }).catch(() => {
             this.loading = false
           })
