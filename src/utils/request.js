@@ -13,7 +13,7 @@ import { getToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
-  baseURL: 'http://192.168.3.2:9999/api', // url = base url + request url
+  baseURL: 'http://localhost:9999/api', // url = base url + request url
   timeout: 5000 // request timeout
 })
 
