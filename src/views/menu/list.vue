@@ -47,7 +47,7 @@
           <el-input v-model="form.name" placeholder="" size="small" style="width:500px;" />
         </el-form-item>
         <el-form-item prop="" label="redirect" :label-width="formLabelWidth">
-          <el-input v-model="form.redirect" :disabled="formType=='edit'?true:false" placeholder="" />
+          <el-input v-model="form.redirect" size="small" :disabled="formType=='edit'?true:false" placeholder="" style="width:500px;" />
         </el-form-item>
         <el-form-item prop="" label="component" :label-width="formLabelWidth">
           <el-input v-model="form.component" placeholder="" size="small" style="width:500px;" />
