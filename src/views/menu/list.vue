@@ -7,7 +7,7 @@
       </el-row>
       <div class="custom-tree-container">
         <div class="block">
-          <el-tree :style="{ height: dataTableHeight-85 + 'px' }" :data="menuData" node-key="id" default-expand-all :expand-on-click-node="false">
+          <el-tree :style="{ height: dataTableHeight-85 + 'px' }" :props="{label:'title'}" :data="menuData" node-key="id" default-expand-all :expand-on-click-node="false">
             <span slot-scope="{ node, data }" class="custom-tree-node">
               <span>{{ node.label }}</span>
               <span>
@@ -105,6 +105,7 @@ export default {
         iconMini: '',
         priority: ''
       },
+      ajaxUrl: '',
       formType: 'add',
       formTitle: '新增菜单',
       formLabelWidth: '110px',
@@ -112,12 +113,13 @@ export default {
     }
   },
   mounted() {
+    this.getMenuData()
   },
   created() {},
   methods: {
     getMenuData() {
       menuList().then((response) => {
-        if (response.errorNo === 200) {
+        if (response.statusCode === 200) {
           this.menuData = response.result
         } else {
           this.$message({
@@ -129,6 +131,7 @@ export default {
     },
     append(node, data) {
       // console.log(data)
+      this.ajaxUrl = '/menu/add'
       this.dialogFormVisible = true
       this.form.path = ''
       this.form.name = ''
@@ -141,23 +144,22 @@ export default {
       this.form.priority = '1'
       this.form.parentId = '0'
       if (data) this.form.parentId = data.id
-      if (this.form.children) delete this.form.children
       if (this.form.id) delete this.form.id
     },
     edit(node, data) {
       console.log(data)
+      this.ajaxUrl = '/menu/edit'
       this.dialogFormVisible = true
       for (const item in this.form) {
         this.form[item] = data[item]
       }
-      this.form.hidden = data.hidden + ''
-      this.form.usage = data.usage + ''
+      this.form.hidden = data.hidden === 1 ? 'true' : 'false'
       this.form.id = data.id
       // console.log(this.form.userTypes)
     },
     submitForm(data) {
-      menuAddOrEdit(this.form).then((response) => {
-        if (response.errorNo === 200) {
+      menuAddOrEdit(this.ajaxUrl, this.form).then((response) => {
+        if (response.statusCode === 200) {
           this.dialogFormVisible = false
           this.getMenuData()
         } else {
@@ -175,8 +177,8 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        menuDel({ menuId: data.id }).then((response) => {
-          if (response.errorNo === 200) {
+        menuDel({ id: data.id }).then((response) => {
+          if (response.statusCode === 200) {
             this.getMenuData()
             this.$message({
               type: 'success',
