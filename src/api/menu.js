@@ -29,7 +29,7 @@ export function menuAddOrEdit(url, data) {
 // 菜单删除
 export function menuDel(params) {
   return request({
-    url: '/user/del/' + params.id,
+    url: '/menu/del/' + params.id,
     method: 'get'
   })
 }
