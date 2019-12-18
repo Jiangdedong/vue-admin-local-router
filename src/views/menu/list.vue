@@ -54,8 +54,8 @@
         </el-form-item>
         <el-form-item prop="" label="hidden" :label-width="formLabelWidth">
           <div style="width:185px;">
-            <el-radio v-model="form.hidden" label="true">true</el-radio>
-            <el-radio v-model="form.hidden" label="false">false</el-radio>
+            <el-radio v-model="form.hidden" :label="true">true</el-radio>
+            <el-radio v-model="form.hidden" :label="false">false</el-radio>
           </div>
         </el-form-item>
         <el-form-item prop="" label="title" :label-width="formLabelWidth">
@@ -99,7 +99,7 @@ export default {
         name: '',
         component: '',
         redirect: '',
-        hidden: 'false',
+        hidden: false,
         title: '',
         icon: '',
         iconMini: '',
@@ -137,7 +137,7 @@ export default {
       this.form.name = ''
       this.form.component = 'Layout'
       this.form.redirect = ''
-      this.form.hidden = 'false'
+      this.form.hidden = false
       this.form.title = ''
       this.form.icon = ''
       this.form.iconMini = ''
@@ -147,13 +147,12 @@ export default {
       if (this.form.id) delete this.form.id
     },
     edit(node, data) {
-      console.log(data)
       this.ajaxUrl = '/menu/edit'
       this.dialogFormVisible = true
       for (const item in this.form) {
         this.form[item] = data[item]
       }
-      this.form.hidden = data.hidden === 1 ? 'true' : 'false'
+      this.form.hidden = data.hidden === 1
       this.form.id = data.id
       // console.log(this.form.userTypes)
     },
