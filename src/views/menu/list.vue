@@ -88,11 +88,7 @@ export default {
   data() {
     return {
       dataTableHeight: 600,
-      parameters: {
-        usage: '1'
-      },
       menuData: [],
-      submitLoading: null,
       form: {
         parentId: '',
         path: '',
@@ -147,6 +143,7 @@ export default {
       if (this.form.id) delete this.form.id
     },
     edit(node, data) {
+      this.formTitle = '编辑'
       this.ajaxUrl = '/menu/edit'
       this.dialogFormVisible = true
       for (const item in this.form) {
