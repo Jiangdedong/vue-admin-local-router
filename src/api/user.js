@@ -43,3 +43,12 @@ export function modifyPassword(data) {
     data
   })
 }
+
+// 用户菜单赋权
+export function updateUserMenus(data) {
+  return request({
+    url: '/user/setMenu',
+    method: 'post',
+    data
+  })
+}
