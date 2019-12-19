@@ -14,6 +14,7 @@
       <el-row class="jdd-table-tile">
         <div class="jdd-table-name">用户列表</div>
         <el-button type="primary" size="small" @click="addUser">新增</el-button>
+        <el-button type="primary" size="small" @click="openMenuDialog">批量赋权</el-button>
         <el-button type="danger" size="small" @click="multipleUserDel()">批量删除</el-button>
       </el-row>
       <el-table v-loading="tableData.loading" :data="tableData.data" max-height="700" border stripe highlight-current-row @selection-change="handleSelectionChange">
@@ -68,11 +69,19 @@
         <el-button type="primary" :loading="btnLoading" size="small" @click="modifyPassword">确 定</el-button>
       </div>
     </el-dialog>
+    <el-dialog v-el-drag-dialog title="用户赋权" :visible.sync="authVisible" :close-on-click-modal="false" width="400px" center>
+      <el-tree ref="menu" style="max-height:500px;" :props="{label:'title'}" :data="menuData" show-checkbox node-key="id" default-expand-all :expand-on-click-node="false" />
+      <div slot="footer" class="dialog-footer" style="text-align: center">
+        <el-button size="small" @click="authVisible = false">取 消</el-button>
+        <el-button type="primary" :loading="btnLoading" size="small" @click="modifyPassword">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
 import elDragDialog from '@/directive/el-dragDialog'
-import { userList, userAddOrEdit, multipleUserDel, modifyPassword } from '@/api/user'
+import { userList, userAddOrEdit, multipleUserDel, modifyPassword, updateUserMenus } from '@/api/user'
+import { menuList } from '@/api/menu'
 import { Encrypt } from '@/utils/cryptojs'
 
 export default {
@@ -170,7 +179,9 @@ export default {
           { required: true, trigger: 'blur', validator: validatePassword }
         ]
       },
-      userId: ''
+      userId: '',
+      menuData: [],
+      authVisible: false
     }
   },
   mounted() {
@@ -317,6 +328,69 @@ export default {
           })
         } else {
           return false
+        }
+      })
+    },
+    openMenuDialog() {
+      const selectedLen = this.multipleSelection.length
+      if (selectedLen === 0) {
+        this.$message({
+          duration: 5000,
+          message: '请选择用户！',
+          type: 'warning'
+        })
+        return false
+      }
+      this.authVisible = true
+      this.getMenuData()
+    },
+    getMenuData() {
+      menuList().then((response) => {
+        if (response.statusCode === 200) {
+          this.menuData = response.result
+        } else {
+          this.$message({
+            message: response.message,
+            type: 'error'
+          })
+        }
+      })
+    },
+    updateUserMenus() {
+      const checkedTree = this.$refs.menu.getCheckedKeys()
+      const halfCheckedTree = this.$refs.menu.getHalfCheckedKeys()
+      const checkedTreeLen = checkedTree.length
+      const para = {
+        userIds: [],
+        menuIds: []
+      }
+      this.multipleSelection.forEach((item) => {
+        para.userIds.push(item.id)
+      })
+      if (checkedTreeLen === 0) {
+        this.$message({
+          duration: 5000,
+          message: '请选择菜单！',
+          type: 'warning'
+        })
+        return false
+      } else {
+        para.menuIds = checkedTree
+      }
+      if (halfCheckedTree.length !== 0) {
+        para.menuIds = para.menuIds.concat(halfCheckedTree)
+      }
+      updateUserMenus(para).then((response) => {
+        if (response.errorNo === 200) {
+          this.$message({
+            message: '授权成功',
+            type: 'success'
+          })
+        } else {
+          this.$message({
+            message: response.message,
+            type: 'error'
+          })
         }
       })
     }
