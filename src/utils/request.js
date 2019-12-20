@@ -9,7 +9,7 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
 import store from '@/store'
-import { getToken, removeToken } from '@/utils/auth'
+import { getToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
@@ -43,7 +43,7 @@ service.interceptors.response.use(
         type: 'error',
         duration: 5 * 1000
       })
-      removeToken()
+      // removeToken()
       return Promise.reject(new Error(res.message || 'Error'))
     } else {
       return res
