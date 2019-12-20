@@ -13,8 +13,8 @@
     <div class="jdd-content">
       <el-row class="jdd-table-tile">
         <div class="jdd-table-name">用户列表</div>
-        <el-button type="primary" size="small" @click="addUser">新增</el-button>
-        <el-button type="primary" size="small" @click="openMenuDialog">批量赋权</el-button>
+        <el-button type="primary" size="small" @click="addUser()">新增</el-button>
+        <el-button type="primary" size="small" @click="openMenuDialog()">批量赋权</el-button>
         <el-button type="danger" size="small" @click="multipleUserDel()">批量删除</el-button>
       </el-row>
       <el-table v-loading="tableData.loading" :data="tableData.data" max-height="700" border stripe highlight-current-row @selection-change="handleSelectionChange">
@@ -32,7 +32,7 @@
         <el-pagination :total="tableData.total" layout="total, sizes, prev, pager, next" :page-sizes="[10, 20, 30, 40,50]" :page-size="20" :current-page="tableData.pageNum" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
       </el-row>
     </div>
-    <el-dialog v-el-drag-dialog :title="formTitle" :visible.sync="dialogFormVisible" width="400px" center :close-on-click-modal="false">
+    <el-dialog v-if="dialogFormVisible" v-el-drag-dialog :title="formTitle" :visible.sync="dialogFormVisible" width="400px" center :close-on-click-modal="false">
       <el-form ref="formRef" :model="form" :inline="true" :rules="rules">
         <el-form-item prop="name" label="昵称" :label-width="formLabelWidth">
           <el-input v-model="form.name" size="small" auto-complete="off" style="width:200px;" :maxlength="11" />
@@ -55,7 +55,7 @@
         <el-button type="primary" :loading="btnLoading" size="small" @click="submitForm">确 定</el-button>
       </div>
     </el-dialog>
-    <el-dialog v-el-drag-dialog title="修改密码" :visible.sync="modifyPasswordVisible" :close-on-click-modal="false" width="400px" center>
+    <el-dialog v-if="modifyPasswordVisible" v-el-drag-dialog title="修改密码" :visible.sync="modifyPasswordVisible" :close-on-click-modal="false" width="400px" center>
       <el-form ref="passwordFormRef" :model="passwordForm" :inline="true" :rules="passwordRules">
         <el-form-item prop="newPassword" label="新的密码" :label-width="formLabelWidth">
           <el-input v-model="passwordForm.newPassword" size="small" placeholder="至少六位，最多十位" style="width:200px" type="password" auto-complete="off" :maxlength="10" />
@@ -69,11 +69,11 @@
         <el-button type="primary" :loading="btnLoading" size="small" @click="modifyPassword">确 定</el-button>
       </div>
     </el-dialog>
-    <el-dialog v-el-drag-dialog title="用户赋权" :visible.sync="authVisible" :close-on-click-modal="false" width="400px" center>
+    <el-dialog v-if="authVisible" v-el-drag-dialog title="用户赋权" :visible.sync="authVisible" :close-on-click-modal="false" width="400px" center>
       <el-tree ref="menu" style="max-height:500px;" :props="{label:'title'}" :data="menuData" show-checkbox node-key="id" default-expand-all :expand-on-click-node="false" />
       <div slot="footer" class="dialog-footer" style="text-align: center">
         <el-button size="small" @click="authVisible = false">取 消</el-button>
-        <el-button type="primary" :loading="btnLoading" size="small" @click="modifyPassword">确 定</el-button>
+        <el-button type="primary" :loading="btnLoading" size="small" @click="updateUserMenus">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -211,13 +211,14 @@ export default {
       this.getTableData()
     },
     addUser() {
+      for (const item in this.form) {
+        this.form[item] = ''
+      }
       this.dialogFormVisible = true
       this.formTitle = '新增'
       this.formType = 'add'
       this.ajaxUrl = '/user/add'
-      this.$nextTick(() => {
-        this.$refs.formRef.resetFields()
-      })
+      this.form.sex = 1
     },
     editUser(row) {
       this.dialogFormVisible = true
@@ -314,7 +315,7 @@ export default {
           modifyPassword({ id: this.userId, pwd }).then((response) => {
             this.btnLoading = false
             if (response.statusCode === 200) {
-              this.dialogFormVisible = false
+              this.modifyPasswordVisible = false
               this.$message({
                 message: '密码修改成功！',
                 type: 'success'
@@ -381,7 +382,8 @@ export default {
         para.menuIds = para.menuIds.concat(halfCheckedTree)
       }
       updateUserMenus(para).then((response) => {
-        if (response.errorNo === 200) {
+        if (response.statusCode === 200) {
+          this.authVisible = false
           this.$message({
             message: '授权成功',
             type: 'success'
