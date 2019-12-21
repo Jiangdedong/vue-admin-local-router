@@ -17,7 +17,7 @@
         <el-button type="primary" size="small" @click="openMenuDialog()">批量赋权</el-button>
         <el-button type="danger" size="small" @click="multipleUserDel()">批量删除</el-button>
       </el-row>
-      <el-table v-loading="tableData.loading" :data="tableData.data" max-height="700" border stripe highlight-current-row @selection-change="handleSelectionChange">
+      <el-table ref="multipleTable" v-loading="tableData.loading" :data="tableData.data" max-height="700" border stripe highlight-current-row @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
         <el-table-column v-for="(item,index) in tableData.columns" :key="index" :prop="item.prop" :label="item.label" :show-overflow-tooltip="tableData.showOverflowTooltip" :formatter="item.formatter" :sortable="item.sortable" />
         <el-table-column fixed="right" label="操作" width="250" align="center" header-align="center">
@@ -257,7 +257,6 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val
-      console.log(val)
     },
     multipleUserDel(id) {
       let ids = ''
@@ -384,6 +383,8 @@ export default {
       updateUserMenus(para).then((response) => {
         if (response.statusCode === 200) {
           this.authVisible = false
+          this.multipleSelection = []
+          this.$refs.multipleTable.clearSelection()
           this.$message({
             message: '授权成功',
             type: 'success'
