@@ -8,10 +8,11 @@
       <div class="custom-tree-container">
         <div class="block">
           <el-tree :style="{ height: dataTableHeight-85 + 'px' }" :props="{label:'title'}" :data="menuData" node-key="id" default-expand-all :expand-on-click-node="false">
-            <span slot-scope="{ node, data }" class="custom-tree-node">
-              <span>{{ node.label }}</span>
+            <div slot-scope="{ node, data }" class="custom-tree-node">
+              <span>{{ node.label+'（path：'+ data.path +'，name：'+data.name+'）' }}</span>
               <span>
                 <el-button
+                  v-if="data.parentId === 0"
                   type="text"
                   size="mini"
                   @click="() => append(node, data)"
@@ -33,7 +34,7 @@
                   <span style="color:#f56c6c">删除</span>
                 </el-button>
               </span>
-            </span>
+            </div>
           </el-tree>
         </div>
       </div>
@@ -46,11 +47,11 @@
         <el-form-item prop="" label="name" :label-width="formLabelWidth">
           <el-input v-model="form.name" placeholder="" size="small" style="width:500px;" />
         </el-form-item>
-        <el-form-item prop="" label="redirect" :label-width="formLabelWidth">
+        <el-form-item v-if="!isChildComponent" prop="" label="redirect" :label-width="formLabelWidth">
           <el-input v-model="form.redirect" size="small" :disabled="formType=='edit'?true:false" placeholder="" style="width:500px;" />
         </el-form-item>
         <el-form-item prop="" label="component" :label-width="formLabelWidth">
-          <el-input v-model="form.component" placeholder="" size="small" style="width:500px;" />
+          <el-input v-model="form.component" :disabled="true" placeholder="" size="small" style="width:500px;" />
         </el-form-item>
         <el-form-item prop="" label="hidden" :label-width="formLabelWidth">
           <div style="width:185px;">
@@ -105,7 +106,8 @@ export default {
       formType: 'add',
       formTitle: '新增菜单',
       formLabelWidth: '110px',
-      dialogFormVisible: false
+      dialogFormVisible: false,
+      isChildComponent: false
     }
   },
   mounted() {
@@ -127,6 +129,7 @@ export default {
     },
     append(node, data) {
       // console.log(data)
+      this.isChildComponent = false
       this.ajaxUrl = '/menu/add'
       this.dialogFormVisible = true
       this.form.path = ''
@@ -139,7 +142,11 @@ export default {
       this.form.iconMini = ''
       this.form.priority = '1'
       this.form.parentId = '0'
-      if (data) this.form.parentId = data.id
+      if (data) {
+        this.form.parentId = data.id
+        this.form.component = 'test/list'
+        this.isChildComponent = true
+      }
       if (this.form.id) delete this.form.id
     },
     edit(node, data) {
@@ -151,7 +158,7 @@ export default {
       }
       this.form.hidden = data.hidden === 1
       this.form.id = data.id
-      // console.log(this.form.userTypes)
+      this.isChildComponent = true
     },
     submitForm(data) {
       menuAddOrEdit(this.ajaxUrl, this.form).then((response) => {
