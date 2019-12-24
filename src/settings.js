@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'Vue Admin Template',
+  title: '根据用户身份加载本地路由',
 
   /**
    * @type {boolean} true | false
