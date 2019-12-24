@@ -42,10 +42,10 @@
     <el-dialog v-el-drag-dialog :title="formTitle" :visible.sync="dialogFormVisible" :close-on-click-modal="false" width="700px">
       <el-form ref="formRef" :model="form" :inline="true">
         <el-form-item prop="" label="path" :label-width="formLabelWidth">
-          <el-input v-model="form.path" :disabled="formType=='edit'?true:false" placeholder="" size="small" style="width:500px;" />
+          <el-input v-model="form.path" :disabled="formType=='edit'?true:false" placeholder="一级菜单请加'/'，二级菜单无需添加，可以参照现有菜单格式添加" size="small" style="width:500px;" />
         </el-form-item>
         <el-form-item prop="" label="name" :label-width="formLabelWidth">
-          <el-input v-model="form.name" placeholder="" size="small" style="width:500px;" />
+          <el-input v-model="form.name" placeholder="首字母请大写" size="small" style="width:500px;" />
         </el-form-item>
         <el-form-item v-if="!isChildComponent" prop="" label="redirect" :label-width="formLabelWidth">
           <el-input v-model="form.redirect" size="small" :disabled="formType=='edit'?true:false" placeholder="" style="width:500px;" />
@@ -65,13 +65,14 @@
         <el-form-item prop="" label="icon" :label-width="formLabelWidth">
           <el-input v-model="form.icon" placeholder="" size="small" />
         </el-form-item>
-        <el-form-item prop="" label="iconMini" :label-width="formLabelWidth">
+        <!-- <el-form-item prop="" label="iconMini" :label-width="formLabelWidth">
           <el-input v-model="form.iconMini" placeholder="" size="small" />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item prop="" label="priority" :label-width="formLabelWidth">
           <el-input v-model="form.priority" placeholder="" size="small" />
         </el-form-item>
       </el-form>
+      <el-alert type="warning" :closable="false">请勿与已有菜单重复</el-alert>
       <div slot="footer" class="dialog-footer" style="text-align: center">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="submitForm('formRef')">确 定</el-button>
