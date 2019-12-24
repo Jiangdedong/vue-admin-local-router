@@ -12,8 +12,8 @@
         :collapse-transition="false"
         mode="vertical"
       >
-        <el-menu-item v-show="!isCollapse" index="1" class="menuItem">
-          Simple vue-admin-template
+        <el-menu-item v-show="!isCollapse" index="1" class="menuItem" style="text-align:center">
+          大A站
         </el-menu-item>
         <sidebar-item v-for="route in permission_routes" :key="route.path" :item="route" :base-path="route.path" />
       </el-menu>
