@@ -1,33 +1,16 @@
-<!--
- * @Descripttion: 
- * @version: 
- * @Author: JDD
- * @Date: 2019-12-14 15:55:37
- * @LastEditors: JDD
- * @LastEditTime: 2019-12-14 22:51:18
- -->
-# vue-admin-template
+## 基于用户角色加载不同路由的vue-element-admin模板
+
 
 ## Build Setup
 
 ```bash
-# 克隆项目
-git clone https://github.com/PanJiaChen/vue-admin-template.git
-
-# 进入项目目录
-cd vue-admin-template
 
 # 安装依赖
 npm install
 
-# 建议不要直接使用 cnpm 安装以来，会有各种诡异的 bug。可以通过如下操作解决 npm 下载速度慢的问题
-npm install --registry=https://registry.npm.taobao.org
-
 # 启动服务
 npm run dev
 ```
-
-浏览器访问 [http://localhost:9526](http://localhost:9528)
 
 ## 发布
 
