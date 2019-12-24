@@ -18,7 +18,8 @@
       </template>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <!-- <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"> -->
+          <img src="../../../static/images/timg.jpg" class="user-avatar">
           <span style="position: relative;top: -10px;left: 5px;cursor:pointer;">
             <span>{{ name }}</span>
             <i class="el-icon-caret-bottom" style="position: relative;top: 0;left: 5px;" />
@@ -32,6 +33,9 @@
           </router-link>
           <a target="_blank" href="https://github.com/Jiangdedong/">
             <el-dropdown-item>Github</el-dropdown-item>
+          </a>
+          <a target="_blank" href="http://blog.myhuier.top">
+            <el-dropdown-item>博客</el-dropdown-item>
           </a>
           <el-dropdown-item divided>
             <span style="display:block;" @click="logout">退出</span>
