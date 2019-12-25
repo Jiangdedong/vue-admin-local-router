@@ -1,5 +1,5 @@
 ## 基于用户角色加载不同路由的vue-element-admin模板
-此项目及在[vue-admin-template]()的基础上，做了路由权限相关方面的修改。
+此项目及在[vue-admin-template](https://github.com/PanJiaChen/vue-admin-template)的基础上，做了路由权限相关方面的修改。可以快速帮助你构建一个基于用户角色的后台管理系统
 此项目包含两块功能
 * 用户管理模块
 * 菜单管理模块
