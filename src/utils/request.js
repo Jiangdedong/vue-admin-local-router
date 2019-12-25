@@ -12,9 +12,6 @@ import store from '@/store'
 import { getToken } from '@/utils/auth'
 
 let baseURL = 'http://localhost:9999/api'
-if (window.location.hostname !== 'localhost') {
-  baseURL = 'http://api.myhuier.top/api'
-}
 // create an axios instance
 const service = axios.create({
   baseURL, // url = base url + request url
