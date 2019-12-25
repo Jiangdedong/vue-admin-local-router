@@ -11,7 +11,7 @@ import { Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 
-let baseURL = 'http://localhost:9999/api'
+const baseURL = 'http://localhost:9999/api'
 // create an axios instance
 const service = axios.create({
   baseURL, // url = base url + request url
