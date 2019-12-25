@@ -10,7 +10,7 @@
       <li>
         在当前模块中你可以新增，删除，修改，给用户配置菜单。新增的用户，你可以在当前站点登录，也可以前往
         <el-tag size="medium">
-          <a style="color:#66b1ff" href="http://remoterouter.myhuier.top" target="_blank">http://localrouter.myhuier.top</a>
+          <a style="color:#66b1ff" href="http://remoterouter.myhuier.top" target="_blank">http://remoterouter.myhuier.top</a>
         </el-tag>（B站）登录，初始密码为<el-tag size="medium">123456</el-tag>，若遇到密码错误，可以重置你需要登录的用户账户密码。
       </li>
       <li>
