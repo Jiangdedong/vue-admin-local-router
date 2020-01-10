@@ -19,7 +19,7 @@
 ## 项目预览
 [当前项目在线Demo预览](http://localrouter.myhuier.top)
 
-[用户分配路由后在线Demo预览](http://localrouter.myhuier.top)
+[用户分配路由后在线Demo预览](http://remoterouter.myhuier.top)
 
 
 ## 开发
